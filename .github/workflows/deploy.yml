@@ -1,0 +1,30 @@
+name: GCP Deploy using WIF
+
+on: 
+  push:
+    branches:
+      - main  # Jab bhi main branch me code jayega, ye pipeline chalegi
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'    # IMPORTANT: Ye line GitHub ko OIDC token banane ki power deti hai
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    
+    # Ye step GCP me login karega WIF ke through (Zero JSON Key!)
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        workload_identity_provider: 'projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/my-github-pool/providers/my-github-provider'
+        service_account: 'my-deployer-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com'
+
+    # Ye step test karega ki login success hua ya nahi
+    - name: 'Test GCP Connection'
+      run: |
+        echo "Login Successful!"
+        gcloud auth list
