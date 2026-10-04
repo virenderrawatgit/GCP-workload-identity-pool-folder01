@@ -27,4 +27,4 @@ jobs:
     - name: 'Test GCP Connection'
       run: |
         echo "Login Successful!"
-        gcloud auth list
+        gcloud compute instances list
