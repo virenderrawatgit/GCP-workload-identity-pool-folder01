@@ -20,8 +20,8 @@ jobs:
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v1'
       with:
-        workload_identity_provider: 'projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/my-github-pool/providers/my-github-provider'
-        service_account: 'my-deployer-sa@YOUR_PROJECT_ID.iam.gserviceaccount.com'
+        workload_identity_provider: 'projects/837215899692/locations/global/workloadIdentityPools/my-github-pool/providers/my-github-provider'
+        service_account: 'my-deployer-sa@gcp-aug8.iam.gserviceaccount.com'
 
     # Ye step test karega ki login success hua ya nahi
     - name: 'Test GCP Connection'
