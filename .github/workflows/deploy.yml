@@ -1,31 +1,22 @@
-name: GCP Deploy using WIF
+name: GCP Federation Test
+on: [push]
 
-on: 
-  push:
-    branches:
-      - main  # Jab bhi main branch me code jayega, ye pipeline chalegi
+permissions:
+  contents: 'read'
+  id-token: 'write' # REQUIRED for Federation
 
 jobs:
-  deploy:
+  test-gcp:
     runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'    # IMPORTANT: Ye line GitHub ko OIDC token banane ki power deti hai
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-    
-    # Ye step GCP me login karega WIF ke through (Zero JSON Key!)
-    - id: 'auth'
-      name: 'Authenticate to Google Cloud'
-      uses: 'google-github-actions/auth@v1'
-      with:
-        workload_identity_provider: 'projects/837215899692/locations/global/workloadIdentityPools/my-github-pool/providers/my-github-provider'
-        service_account: 'my-deployer-sa@gcp-aug8.iam.gserviceaccount.com'
+      - uses: actions/checkout@v4
 
-    # Ye step test karega ki login success hua ya nahi
-    - name: 'Test GCP Connection'
-      run: |
-        echo "Login Successful!"
-        gcloud auth list
-        gcloud compute instances list
+      - id: 'auth'
+        name: 'Authenticate to GCP'
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: 'projects/837215899692/locations/global/workloadIdentityPools/git-hub-pool-gcp/providers/github-provider'
+          service_account: 'git-hub-sa@gcp-aug8.iam.gserviceaccount.com'
+
+      - name: 'List Buckets'
+        run: gcloud storage ls
